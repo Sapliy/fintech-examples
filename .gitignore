@@ -4,6 +4,6 @@
 /go/vendor
 
 # Node
-/node/node_module
+/node/node_modules
 
 # Python
