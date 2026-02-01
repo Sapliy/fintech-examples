@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sapliy/fintech-sdk-go"
+	fintech "github.com/sapliy/fintech-sdk-go"
 )
 
 func main() {

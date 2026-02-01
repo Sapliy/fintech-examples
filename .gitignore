@@ -1,0 +1,9 @@
+.env 
+
+# Go
+/go/vendor
+
+# Node
+/node/node_module
+
+# Python
