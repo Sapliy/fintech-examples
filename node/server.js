@@ -2,11 +2,12 @@ const express = require('express');
 const { FintechClient } = require('@sapliy/fintech');
 
 const app = express();
-app.use(express.json());
-
 const client = new FintechClient(process.env.SAPLIY_API_KEY);
 
-app.post('/charge', async (req, res) => {
+// Webhook secret for verification
+const WEBHOOK_SECRET = process.env.SAPLIY_WEBHOOK_SECRET;
+
+app.post('/charge', express.json(), async (req, res) => {
   try {
     const payment = await client.payments.create({
       amount: req.body.amount,
@@ -17,6 +18,31 @@ app.post('/charge', async (req, res) => {
     res.json(payment);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Webhook endpoint
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['x-sapliy-signature'];
+
+  try {
+    const event = client.webhooks.constructEvent(req.body, sig, WEBHOOK_SECRET);
+
+    console.log('Received event:', event.type);
+
+    // Handle the event
+    switch (event.type) {
+      case 'payment.succeeded':
+        const payment = event.data.object;
+        console.log(`Payment for ${payment.amount} succeeded!`);
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.json({ received: true });
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
 
