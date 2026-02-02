@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Request, Header
-from fintech import FintechClient
+from sapliyio_fintech import FintechClient
 import os
 import json
 

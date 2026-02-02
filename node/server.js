@@ -1,8 +1,8 @@
-const express = require('express');
-const { FintechClient } = require('@sapliy/fintech');
+import express from 'express';
+import Sapliyio from '@sapliyio/fintech';
 
 const app = express();
-const client = new FintechClient(process.env.SAPLIY_API_KEY);
+const client = new Sapliyio.FintechClient(process.env.SAPLIY_API_KEY);
 
 // Webhook secret for verification
 const WEBHOOK_SECRET = process.env.SAPLIY_WEBHOOK_SECRET;

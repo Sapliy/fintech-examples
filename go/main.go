@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"os"
 
-	fintech "github.com/sapliy/fintech-sdk-go"
+	sapliyio "github.com/sapliy/fintech-sdk-go"
 )
 
 func main() {
-	client := fintech.NewClient(os.Getenv("SAPLIY_API_KEY"))
+	client := sapliyio.NewClient(os.Getenv("SAPLIY_API_KEY"))
 	webhookSecret := os.Getenv("SAPLIY_WEBHOOK_SECRET")
 
 	http.HandleFunc("/charge", func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func main() {
 			return
 		}
 
-		payment, err := client.Payments.Create(context.Background(), &fintech.CreateChargeRequest{
+		payment, err := client.Payments.Create(context.Background(), &sapliyio.CreateChargeRequest{
 			Amount:   1000,
 			Currency: "USD",
 			SourceID: "tok_visa",
