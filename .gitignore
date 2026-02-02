@@ -1,9 +1,28 @@
-.env 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
 
 # Go
-/go/vendor
-
-# Node
-/node/node_modules
+vendor/
+*.exe
+*.test
+*.out
+/bin/
 
 # Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# IDEs & Misc
+.DS_Store
+.vscode/
+.idea/
