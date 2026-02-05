@@ -21,10 +21,10 @@ func main() {
 			return
 		}
 
-		payment, err := client.Payments.Create(context.Background(), &sapliyio.CreateChargeRequest{
+		payment, err := client.Payments.CreateIntent(context.Background(), &sapliyio.PaymentIntentRequest{
 			Amount:   1000,
 			Currency: "USD",
-			SourceID: "tok_visa",
+			ZoneID:   "zone_123", // Optional zone scoping
 		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

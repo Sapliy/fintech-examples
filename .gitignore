@@ -11,6 +11,8 @@ vendor/
 *.test
 *.out
 /bin/
+event-processor
+main
 
 # Python
 __pycache__/
