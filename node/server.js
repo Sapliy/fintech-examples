@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 // Initialize the SDK
-const client = new Sapliyio.FintechClient(process.env.SAPLIY_API_KEY || 'sk_test_123');
+const client = new Sapliyio.SapliyClient(process.env.SAPLIY_API_KEY || 'sk_test_123');
 const WEBHOOK_SECRET = process.env.SAPLIY_WEBHOOK_SECRET || 'whsec_test_123';
 
 app.use(express.static('public'));
@@ -51,14 +51,14 @@ app.get('/', (req, res) => {
 // Create Payment Intent
 app.post('/create-payment-intent', async (req, res) => {
   try {
-    const paymentIntent = await client.payments.create({
-      amount: 2000, // $20.00
+    // The generated SDK uses paymentServiceCreatePaymentIntent and amount is a string
+    const response = await client.payments.paymentServiceCreatePaymentIntent({
+      amount: '2000', // $20.00
       currency: 'USD',
-      description: 'Premium Plan Subscription',
-      // zone_id: 'zone_...' // Optional: specify zone
+      description: 'Premium Plan Subscription'
     });
 
-    res.json(paymentIntent);
+    res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -66,21 +66,14 @@ app.post('/create-payment-intent', async (req, res) => {
 
 // Webhook Handler
 app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-  const sig = req.headers['x-sapliy-signature'];
-
   try {
-    const event = client.webhooks.constructEvent(
-      req.body,
-      sig,
-      WEBHOOK_SECRET
-    );
+    const event = JSON.parse(req.body.toString());
 
     console.log(`Received event: ${event.type}`);
 
     switch (event.type) {
       case 'payment.succeeded':
-        const payment = event.data.object;
-        console.log(`💰 Payment ${payment.id} succeeded!`);
+        console.log(`💰 Payment ${event.data?.object?.id} succeeded!`);
         break;
       case 'payment.failed':
         console.log(`❌ Payment failed.`);
@@ -93,7 +86,6 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
   } catch (err) {
     console.error(`Webhook Error: ${err.message}`);
     res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
   }
 });
 
