@@ -1,7 +1,7 @@
-module github.com/sapliy/fintech-examples/go
+module github.com/sapliy/sapliy-examples/go
 
 go 1.25.6
 
-require github.com/sapliy/fintech-sdk-go v0.0.0
+require github.com/sapliy/sapliy-sdk-go v0.0.0
 
-replace github.com/sapliy/fintech-sdk-go => ../../fintech-sdk-go
+replace github.com/sapliy/sapliy-sdk-go => ../../sapliy-sdk-go

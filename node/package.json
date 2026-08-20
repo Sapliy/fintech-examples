@@ -1,7 +1,7 @@
 {
-  "name": "@sapliyio/fintech-example-node",
+  "name": "sapliy-example-node",
   "version": "1.0.0",
-  "description": "Fintech Ecosystem SDK for Node.js built by Sapliy",
+  "description": "Sapliy SDK for Node.js example",
   "license": "ISC",
   "author": "",
   "type": "module",

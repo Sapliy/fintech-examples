@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	fintech "github.com/sapliy/fintech-sdk-go"
+	sapliy "github.com/sapliy/sapliy-sdk-go"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 	}
 
 	// Initialize the client
-	client := fintech.NewClient(apiKey)
+	client := sapliy.NewClient(apiKey)
 
 	// Simulate event processing loop
 	// In a real app, this would consume from a queue (SQS, Kafka, RabbitMQ)
@@ -51,7 +51,7 @@ func main() {
 	}
 }
 
-func processPendingPayments(client *fintech.Client) {
+func processPendingPayments(client *sapliy.Client) {
 	// Example: In a real scenario, we might list pending payments.
 	// For this example, we'll just print a status check.
 	// Since we don't have ListPayments exposed in the simple SDK yet (based on sapliyio.go),
@@ -59,13 +59,18 @@ func processPendingPayments(client *fintech.Client) {
 
 	ctx := context.Background()
 
+	zone := os.Getenv("SAPLIY_ZONE")
+	if zone == "" {
+		zone = "zone_123"
+	}
+
 	// Try to fetch a dummy payment
-	payment, err := client.Payments.Get(ctx, "pay_123456")
+	payment, err := client.Payments.GetIntent(ctx, "pay_123456", zone)
 	if err != nil {
 		// Expected if it doesn't exist
 		// fmt.Printf("Poll: No new payments found (checked pay_123456: %v)\n", err)
 	} else {
-		fmt.Printf("Checked Payment %s: Status=%s\n", payment.ID, payment.Status)
+		fmt.Printf("Checked Payment %s: Status=%s\n", payment.Id, payment.Status)
 	}
 }
 

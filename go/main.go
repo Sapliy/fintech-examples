@@ -8,12 +8,15 @@ import (
 	"net/http"
 	"os"
 
-	sapliyio "github.com/sapliy/fintech-sdk-go"
+	sapliyio "github.com/sapliy/sapliy-sdk-go"
 )
 
 func main() {
 	client := sapliyio.NewClient(os.Getenv("SAPLIY_API_KEY"))
-	webhookSecret := os.Getenv("SAPLIY_WEBHOOK_SECRET")
+	zone := os.Getenv("SAPLIY_ZONE")
+	if zone == "" {
+		zone = "zone_123" // Optional zone scoping
+	}
 
 	http.HandleFunc("/charge", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -21,11 +24,7 @@ func main() {
 			return
 		}
 
-		payment, err := client.Payments.CreateIntent(context.Background(), &sapliyio.PaymentIntentRequest{
-			Amount:   1000,
-			Currency: "USD",
-			ZoneID:   "zone_123", // Optional zone scoping
-		})
+		payment, err := client.Payments.CreateIntent(context.Background(), zone, 1000, "USD", "Example charge", nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -46,10 +45,12 @@ func main() {
 			return
 		}
 
-		sig := r.Header.Get("X-Sapliy-Signature")
-		event, err := client.Webhooks.ConstructEvent(payload, sig, webhookSecret)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+		event := struct {
+			Type string                 `json:"type"`
+			Data map[string]interface{} `json:"data"`
+		}{}
+		if err := json.Unmarshal(payload, &event); err != nil {
+			http.Error(w, "Error parsing event", http.StatusBadRequest)
 			return
 		}
 

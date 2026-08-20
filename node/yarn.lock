@@ -4,7 +4,7 @@
 
 "@sapliyio/fintech@^0.0.1":
   version "0.0.1"
-  resolved "file:../../fintech-sdk-node"
+  resolved "file:../../sapliy-sdk-node"
   dependencies:
     axios "^1.13.4"
     dotenv "^17.2.3"

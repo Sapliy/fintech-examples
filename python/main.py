@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request, Header
-from sapliyio_fintech import FintechClient
+from sapliyio_fintech import SapliyClient
 import os
 import json
 
 app = FastAPI()
-client = FintechClient(api_key=os.getenv("SAPLIY_API_KEY"))
+client = SapliyClient(api_key=os.getenv("SAPLIY_API_KEY"))
 WEBHOOK_SECRET = os.getenv("SAPLIY_WEBHOOK_SECRET")
 
 @app.post("/charge")
